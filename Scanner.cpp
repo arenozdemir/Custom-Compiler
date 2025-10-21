@@ -6,12 +6,22 @@
 #include <unordered_map>
 
 static const std::unordered_map<std::string_view, TokenType> keywords = {
-    {"var", TokenType::TOKEN_VAR},
-    {"if", TokenType::TOKEN_IF},
-    {"else", TokenType::TOKEN_ELSE},
-    {"print", TokenType::TOKEN_PRINT},
-	{"func", TokenType::TOKEN_FUNCTION},
-	{"return", TokenType::TOKEN_RETURN},
+    {"var",    Var},
+    {"if",     If},
+    {"else",   Else},
+    {"print",  Print},
+    {"func",   Func},
+    {"for",    For},
+    {"while",  While},
+    {"true",   True},
+    {"false",  False},
+    {"nil",    Nil},
+    {"return", Return},
+    {"and",    And},
+    {"class",  Class},
+    {"or",     Or},
+    {"super",  Super},
+    {"this",   This}
 };
 
 void Scanner::scanToken()
@@ -25,8 +35,8 @@ void Scanner::scanToken()
             if (c == '\n') {
                 line++;
             }
-            advance(); 
-            start = current; 
+            advance();
+            start = current;
             continue;
         }
 
@@ -36,36 +46,55 @@ void Scanner::scanToken()
             }
             continue;
         }
-
+        if (c == '/' && current + 1 < source.length() && source[current + 1] == '*') {
+            advance();
+            advance();
+            while (true) {
+                if (isAtEnd()) {
+                    std::cerr << "[Hata Satır " << line << "] Çok satırlı yorum kapanış işareti ('*/') bekleniyor." << std::endl;
+                    return;
+                }
+                if (peek() == '*' && current + 1 < source.length() && source[current + 1] == '/') {
+                    advance();
+                    advance();
+                    break;
+                }
+                if (peek() == '\n') {
+                    line++;
+                }
+                advance();
+            }
+            start = current;
+            continue;
+        }
         break;
     }
-
     if (isAtEnd()) return;
 
-    start = current; 
+    start = current;
 
     char c = advance();
 
     switch (c) {
-    case '(': addToken(TOKEN_LEFT_PAREN); break;
-    case ')': addToken(TOKEN_RIGHT_PAREN); break;
-    case '{': addToken(TOKEN_LEFT_BRACE); break;
-    case '}': addToken(TOKEN_RIGHT_BRACE); break;
-    case ',': addToken(TOKEN_COMMA); break;
-    case '.': addToken(TOKEN_DOT); break;
-    case '-': addToken(TOKEN_MINUS); break;
-    case '+': addToken(TOKEN_PLUS); break;
-    case ';': addToken(TOKEN_SEMICOLON); break;
-    case '*': addToken(TOKEN_STAR); break;
+    case '(': addToken(LeftParen); break;
+    case ')': addToken(RightParen); break;
+    case '{': addToken(LeftBrace); break;
+    case '}': addToken(RightBrace); break;
+    case ',': addToken(Comma); break;
+    case '.': addToken(Dot); break;
+    case '-': addToken(Minus); break;
+    case '+': addToken(Plus); break;
+    case ';': addToken(Semicolon); break;
+    case '*': addToken(Star); break;
 
 
-    case '!': addToken(match('=') ? TOKEN_BANG_EQUAL : TOKEN_BANG); break;
-    case '=': addToken(match('=') ? TOKEN_EQUAL_EQUAL : TOKEN_EQUAL); break;
-    case '<': addToken(match('=') ? TOKEN_LESS_EQUAL : TOKEN_LESS); break;
-    case '>': addToken(match('=') ? TOKEN_GREATER_EQUAL : TOKEN_GREATER); break;
+    case '!': addToken(match('=') ? BangEqual : Bang); break;
+    case '=': addToken(match('=') ? EqualEqual : Equal); break;
+    case '<': addToken(match('=') ? LessEqual : Less); break;
+    case '>': addToken(match('=') ? GreaterEqual : Greater); break;
 
     case '/':
-        addToken(TOKEN_SLASH); 
+        addToken(Slash);
         break;
     case '"':
         scanString();
@@ -90,23 +119,71 @@ void Scanner::scanNumber()
     while (isdigit(peek())) {
         advance();
     }
-    if (peek() == '.' && isdigit(source[current + 1])) {
-        advance(); 
-        while (isdigit(peek())) {
-            advance(); 
+
+    bool isDecimal = false;
+
+    if (peek() == '.') {
+        if (isdigit(source[current + 1]) || source[current + 1] == 'f' || source[current + 1] == 'F')
+        {
+            isDecimal = true;
+            advance();
+            while (isdigit(peek())) {
+                advance();
+            }
         }
     }
 
+    bool isFloat = false;
+    if (peek() == 'f' || peek() == 'F') {
+        isFloat = true;
+        advance();
+    }
     std::string_view numberView(source.data() + start, current - start);
 
-    double value;
-    auto [ptr, ec] = std::from_chars(numberView.data(), numberView.data() + numberView.size(), value);
+    if (isFloat) {
+        std::string_view parseView(numberView.data(), numberView.size() - 1);
+        float value;
+        auto [ptr, ec] = std::from_chars(parseView.data(), parseView.data() + parseView.size(), value);
 
-    if (ec == std::errc()) {
-        addToken(TOKEN_NUMBER, value);
+        if (ec == std::errc()) {
+            addToken(Number, value);
+        }
+        else {
+            std::cerr << "[Hata Satır " << line << "] Geçersiz float biçimi: " << parseView << std::endl;
+        }
+    }
+    else if (isDecimal) {
+        double value;
+        auto [ptr, ec] = std::from_chars(numberView.data(), numberView.data() + numberView.size(), value);
+
+        if (ec == std::errc()) {
+            addToken(Number, value);
+        }
+        else {
+            std::cerr << "[Hata Satır " << line << "] Geçersiz double biçimi: " << numberView << std::endl;
+        }
     }
     else {
-        std::cerr << "[Hata Satır " << line << "] Geçersiz sayı biçimi: " << numberView << std::endl;
+        int value;
+        auto [ptr_int, ec_int] = std::from_chars(numberView.data(), numberView.data() + numberView.size(), value);
+
+        if (ec_int == std::errc()) {
+            addToken(Number, value);
+        }
+        else if (ec_int == std::errc::result_out_of_range) {
+            double double_value;
+            auto [ptr_dbl, ec_dbl] = std::from_chars(numberView.data(), numberView.data() + numberView.size(), double_value);
+
+            if (ec_dbl == std::errc()) {
+                addToken(Number, double_value);
+            }
+            else {
+                std::cerr << "[Hata Satır " << line << "] Geçersiz sayı (int overflow, double parse failed): " << numberView << std::endl;
+            }
+        }
+        else {
+            std::cerr << "[Hata Satır " << line << "] Geçersiz tamsayı biçimi: " << numberView << std::endl;
+        }
     }
 }
 
@@ -121,17 +198,17 @@ void Scanner::scanIdentifier()
     auto it = keywords.find(text);
 
     if (it == keywords.end()) {
-        addToken(TOKEN_IDENTIFIER);
+        addToken(Identifier);
     }
     else {
-        addToken(it->second); 
+        addToken(it->second);
     }
 }
 
 void Scanner::scanString()
 {
     while (peek() != '"' && !isAtEnd()) {
-        if (peek() == '\n') line++; 
+        if (peek() == '\n') line++;
         advance();
     }
 
@@ -143,5 +220,5 @@ void Scanner::scanString()
     advance();
 
     std::string_view literalView(source.data() + start + 1, current - start - 2);
-    addToken(TOKEN_STRING, std::string(literalView));
+    addToken(String, std::string(literalView));
 }

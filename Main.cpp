@@ -10,13 +10,16 @@ int main() {
         var y = "inceden compiler";
         // yorum satırı
         var z = x + 10; 
-        
+        float y = 1.33f;
         if (z > 100) {
             z = z + 1;
         } else {
             z = 0;
         }
         != == <= >=
+        /* bu bir yorumdur */
+        return z;
+
     )";
 
     std::cout << "--- Source Code ---" << std::endl;

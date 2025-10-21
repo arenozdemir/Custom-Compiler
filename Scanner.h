@@ -61,7 +61,7 @@ struct Scanner
             start = current;
             scanToken();
         }
-        tokens.emplace_back(TOKEN_EOF, "", line);
+        tokens.emplace_back(Eof, "", line);
         return std::move(tokens);
     }
 };

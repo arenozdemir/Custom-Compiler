@@ -4,47 +4,47 @@
 
 std::string tokenTypeToString(TokenType type) {
     switch (type) {
-    case TokenType::TOKEN_LEFT_PAREN:    return "LeftParen";
-    case TokenType::TOKEN_RIGHT_PAREN:   return "RightParen";
-    case TokenType::TOKEN_LEFT_BRACE:    return "LeftBrace";
-    case TokenType::TOKEN_RIGHT_BRACE:   return "RightBrace";
-    case TokenType::TOKEN_COMMA:        return "Comma";
-    case TokenType::TOKEN_DOT:          return "Dot";
-    case TokenType::TOKEN_MINUS:        return "Minus";
-    case TokenType::TOKEN_PLUS:         return "Plus";
-    case TokenType::TOKEN_SEMICOLON:    return "Semicolon";
-    case TokenType::TOKEN_SLASH:        return "Slash";
-    case TokenType::TOKEN_STAR:         return "Star";
-    case TokenType::TOKEN_BANG:         return "Bang";
-    case TokenType::TOKEN_BANG_EQUAL:    return "BangEqual";
-    case TokenType::TOKEN_EQUAL:        return "Equal";
-    case TokenType::TOKEN_EQUAL_EQUAL:   return "EqualEqual";
-    case TokenType::TOKEN_GREATER:      return "Greater";
-    case TokenType::TOKEN_GREATER_EQUAL: return "GreaterEqual";
-    case TokenType::TOKEN_LESS:         return "Less";
-    case TokenType::TOKEN_LESS_EQUAL:    return "LessEqual";
-    case TokenType::TOKEN_IDENTIFIER:   return "Identifier";
-    case TokenType::TOKEN_STRING:       return "String";
-    case TokenType::TOKEN_NUMBER:       return "Number";
-        //case TokenType::TOKEN_AND:          return "And";
-        //case TokenType::Class:        return "Class";
-    case TokenType::TOKEN_ELSE:         return "Else";
-        //case TokenType::False:        return "False";
-        //case TokenType::For:          return "For";
-    case TokenType::TOKEN_FUNCTION:          return "Function";
-    case TokenType::TOKEN_IF:           return "If";
-        //case TokenType::Nil:          return "Nil";
-        //case TokenType::Or:           return "Or";
-    case TokenType::TOKEN_PRINT:        return "Print";
-    case TokenType::TOKEN_RETURN:       return "Return";
-        //case TokenType::Super:        return "Super";
-        //case TokenType::This:         return "This";
-        //case TokenType::True:         return "True";
-    case TokenType::TOKEN_VAR:          return "Var";
-        //case TokenType::While:        return "While";
-        //case TokenType::Error:        return "Error";
-    case TokenType::TOKEN_EOF:          return "Eof";
-    default:                    return "Unknown"; // Her ihtimale karşı
+    case LeftParen:    return "LeftParen";
+    case RightParen:   return "RightParen";
+    case LeftBrace:    return "LeftBrace";
+    case RightBrace:   return "RightBrace";
+    case Comma:        return "Comma";
+    case Dot:          return "Dot";
+    case Minus:        return "Minus";
+    case Plus:         return "Plus";
+    case Semicolon:    return "Semicolon";
+    case Slash:        return "Slash";
+    case Star:         return "Star";
+    case Bang:         return "Bang";
+    case BangEqual:    return "BangEqual";
+    case Equal:        return "Equal";
+    case EqualEqual:   return "EqualEqual";
+    case Greater:      return "Greater";
+    case GreaterEqual: return "GreaterEqual";
+    case Less:         return "Less";
+    case LessEqual:    return "LessEqual";
+    case Identifier:   return "Identifier";
+    case String:       return "String";
+    case Number:       return "Number";
+    case And:          return "And";
+    case Class:        return "Class";
+    case Else:         return "Else";
+    case False:        return "False";
+    case For:          return "For";
+    case Func:         return "Func"; 
+    case If:           return "If";
+    case Nil:          return "Nil";
+    case Or:           return "Or";
+    case Print:        return "Print";
+    case Return:       return "Return";
+    case Super:        return "Super";
+    case This:         return "This";
+    case True:         return "True";
+    case Var:          return "Var";
+    case While:        return "While";
+    case Error:        return "Error";
+    case Eof:          return "Eof"; 
+    default:           return "Unknown";
     }
 }
 
@@ -61,7 +61,7 @@ std::string Token::toString() const
 
         if constexpr (std::is_same_v<T, std::monostate>) {
             ss << "null";
-        }
+		}
         else if constexpr (std::is_same_v<T, std::string>) {
             ss << "\"" << arg << "\""; 
         }
