@@ -1,0 +1,12 @@
+﻿  Main.cpp
+C:\Users\Emre\Documents\Visual Studio 2022\Projects\compiler\Main.cpp(11,1): warning C4566: character represented by universal-character-name '\u0131' cannot be represented in the current code page (1252)
+  Scanner.cpp
+C:\Users\Emre\Documents\Visual Studio 2022\Projects\compiler\Scanner.cpp(82,26): warning C4566: character represented by universal-character-name '\u0131' cannot be represented in the current code page (1252)
+C:\Users\Emre\Documents\Visual Studio 2022\Projects\compiler\Scanner.cpp(109,22): warning C4566: character represented by universal-character-name '\u0131' cannot be represented in the current code page (1252)
+C:\Users\Emre\Documents\Visual Studio 2022\Projects\compiler\Scanner.cpp(109,49): warning C4566: character represented by universal-character-name '\u0131' cannot be represented in the current code page (1252)
+C:\Users\Emre\Documents\Visual Studio 2022\Projects\compiler\Scanner.cpp(139,22): warning C4566: character represented by universal-character-name '\u0131' cannot be represented in the current code page (1252)
+C:\Users\Emre\Documents\Visual Studio 2022\Projects\compiler\Scanner.cpp(139,49): warning C4566: character represented by universal-character-name '\u0131' cannot be represented in the current code page (1252)
+C:\Users\Emre\Documents\Visual Studio 2022\Projects\compiler\Scanner.cpp(139,49): warning C4566: character represented by universal-character-name '\u015F' cannot be represented in the current code page (1252)
+  Token.cpp
+  Generating Code...
+  compiler.vcxproj -> C:\Users\Emre\Documents\Visual Studio 2022\Projects\compiler\x64\Debug\compiler.exe
