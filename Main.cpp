@@ -1,39 +1,47 @@
 ﻿#include <iostream>
 #include <string>
 #include <vector>
-#include "Scanner.h"
+#include <memory>
+
 #include "Token.h"
+#include "Expr.h"
+#include "Scanner.h"
+#include "Parser.h"
+#include "AstPrinter.h" 
 
-int main() {
-    std::string source_code = R"(
-        int x = 123.45;
-        var y = "inceden compiler";
-        // yorum satırı
-        var z = x + 10; 
-        float y = 1.33f;
-        if (z > 100) {
-            z = z + 1;
-        } else {
-            z = 0;
-        }
-        != == <= >=
-        /* bu bir yorumdur */
-        return z;
+bool run(const std::string& source)
+{
+    std::cout << "--- Kaynak Kod ---\n" << source << "\n";
 
-    )";
-
-    std::cout << "--- Source Code ---" << std::endl;
-    std::cout << source_code << std::endl;
-    std::cout << "--------------------" << std::endl;
-    std::cout << "--- Tokens ---" << std::endl;
-
-    Scanner scanner(source_code);
-
+    Scanner scanner(source);
     std::vector<Token> tokens = scanner.scanTokens();
 
-    for (const auto& token : tokens) {
-        std::cout << token.toString() << std::endl;
+    Parser parser(tokens);
+    std::unique_ptr<Expr> expression = parser.parse();
+
+    if (parser.hadError) {
+        std::cout << "\n>>> Ayrıştırma Başarısız (Parser Hatası).\n";
+    }
+    else if (expression) {
+        std::cout << "\n--- AST (Lisp Stili) ---" << std::endl;
+        AstPrinter printer;
+        std::cout << printer.print(expression.get()) << std::endl;
     }
 
-    return 0;
+    std::cout << "--------------------------------\n\n";
+
+    return parser.hadError;
+}
+
+int main()
+{
+    bool hadAnyError = false;
+
+    hadAnyError = run("-5 * (1 + 20.5f)") || hadAnyError;
+    hadAnyError = run("1 + 2 == 3 * 4") || hadAnyError;
+    hadAnyError = run("10 * (4 + 5") || hadAnyError;
+    hadAnyError = run("10 / !") || hadAnyError;
+    hadAnyError = run("var a = 5;") || hadAnyError;
+
+    return hadAnyError ? 1 : 0;
 }

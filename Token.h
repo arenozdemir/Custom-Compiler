@@ -56,7 +56,7 @@ struct Token
 	TokenType type;
 	std::string lexeme;
 	int line;
-	std::variant<std::monostate, int, double, float, std::string> literal;
+    std::variant<std::monostate, bool, int, float, double, std::string> literal;
 
 	Token(TokenType type, std::string lexeme, int line)
 		: type(type), lexeme(std::move(lexeme)), line(line), literal(std::monostate{}) {}

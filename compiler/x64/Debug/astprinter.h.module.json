@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "compiler\\x64\\Debug\\AstPrinter.h.obj",
+            "outputs": [
+                "C:\\Users\\Emre\\Documents\\Visual Studio 2022\\Projects\\compiler\\compiler\\x64\\Debug\\vc143.pdb",
+                "compiler\\x64\\Debug\\",
+                "C:\\Users\\Emre\\Documents\\Visual Studio 2022\\Projects\\compiler\\compiler\\x64\\Debug\\AstPrinter.h.ifc"
+            ],
+            "provides": [
+                {
+                    "logical-name": "AstPrinter.h",
+                    "source-path": "c:\\users\\emre\\documents\\visual studio 2022\\projects\\compiler\\astprinter.h",
+                    "lookup-method": "absolute"
+                }
+            ],
+            "requires": []
+        }
+    ]
+}
